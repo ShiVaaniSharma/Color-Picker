@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Universal Color Picker</title>
+    <!-- Link the CSS file -->
+    <link rel="stylesheet" href="style.css">
+    <!-- Add Font Awesome for icons (for refresh button and paste icon) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+    <!-- Main Container for the entire application -->
+    <div class="universal-picker-container">
+
+        <!-- Header section with Title and Refresh button -->
+        <div class="header-controls">
+            <h1>Universal Color Picker</h1>
+            <button id="refresh-btn" title="Refresh Page">
+                <i class="fas fa-sync-alt"></i> <!-- Refresh icon -->
+            </button>
+        </div>
+
+        <!-- Main content area, split into left and right columns -->
+        <div class="main-content">
+
+            <!-- Left Side: Contains Picker/Canvas and Image Controls -->
+            <div class="picker-area-wrapper">
+
+                <!-- Controls for uploading/pasting/clearing images -->
+                <div class="image-controls">
+                    <!-- Hidden file input triggered by the label -->
+                    <input type="file" id="image-upload" accept="image/*" style="display: none;">
+                    <!-- Label styled as a button to trigger file input -->
+                    <label for="image-upload" class="upload-btn">Upload/Change Image</label>
+
+                    <!-- Interactive area for dropping or pasting images -->
+                    <div id="paste-drop-zone" class="paste-drop-zone">
+                         <span class="paste-instruction">Drop Image Here or Paste (Ctrl+V)</span>
+                         <i class="fas fa-paste paste-icon"></i> <!-- Paste icon -->
+                    </div>
+
+                    <!-- Button to clear the loaded image and revert to picker mode -->
+                    <button id="clear-image-btn" class="clear-btn" style="display: none;">Use Picker</button>
+                </div>
+
+                <!-- Area that displays either the direct picker or the image canvas -->
+                <div class="picker-canvas-area" id="picker-canvas-area">
+                    <!-- Direct Color Picker (Saturation/Value Box) -->
+                    <div class="saturation-value-box" id="saturation-value-box">
+                        <div class="saturation-overlay"></div> <!-- Gradient for saturation -->
+                        <div class="value-overlay"></div>    <!-- Gradient for value/brightness -->
+                        <div class="picker-handle" id="picker-handle"></div> <!-- Draggable handle -->
+                    </div>
+
+                    <!-- Canvas for displaying the loaded image -->
+                    <canvas id="image-canvas" style="display: none;"></canvas>
+
+                    <!-- Placeholder text shown when canvas is empty (initially or loading) -->
+                    <div id="canvas-placeholder" class="placeholder" style="display: none;">
+                        Image will appear here. Click to pick color.
+                    </div>
+
+                    <!-- Pixel Preview Cursor Element (replaces pen/magnifier) -->
+                    <div id="pixel-preview-cursor" class="pixel-preview-cursor" style="display: none;">
+                        <div class="pixel-grid"></div> <!-- Shows magnified pixelated background -->
+                        <div class="center-marker"></div> <!-- Highlights the central target pixel -->
+                    </div>
+                </div>
+
+                 <!-- Status message area for user feedback -->
+                 <p id="status-message" class="status"></p>
+            </div> <!-- End of picker-area-wrapper -->
+
+            <!-- Right Side: Contains Sliders, Preview, and Color Code Outputs -->
+            <div class="controls-preview-wrapper">
+
+                <!-- Sliders for Hue and Opacity -->
+                <div class="sliders-container">
+                    <!-- Hue Slider -->
+                    <div class="slider-wrapper">
+                        <input type="range" min="0" max="360" value="0" class="slider hue-slider" id="hue-slider" title="Hue">
+                    </div>
+                    <!-- Opacity Slider -->
+                    <div class="slider-wrapper opacity-wrapper">
+                        <input type="range" min="0" max="100" value="100" class="slider opacity-slider" id="opacity-slider" title="Opacity">
+                        <!-- Background element for opacity slider visualization -->
+                        <div class="opacity-slider-bg" id="opacity-slider-bg"></div>
+                    </div>
+                </div>
+
+                <!-- Color Preview and Code Output Section -->
+                <div class="preview-output">
+                    <!-- Box showing the currently selected color -->
+                    <div class="color-preview" id="color-preview">
+                        <!-- Checkerboard background for transparency visualization -->
+                        <div class="checkerboard-bg"></div>
+                        <!-- Layer showing the actual color -->
+                        <div class="preview-color-layer" id="preview-color-layer"></div>
+                    </div>
+
+                    <!-- Container for different color code formats -->
+                    <div class="color-codes-container">
+                        <!-- RGBA Output -->
+                        <div class="code-output-group">
+                            <label for="rgba-code">RGBA</label>
+                            <input type="text" id="rgba-code" readonly>
+                            <button class="copy-btn" data-target="rgba-code" title="Copy RGBA">Copy</button>
+                        </div>
+                         <!-- HEX Output -->
+                         <div class="code-output-group">
+                            <label for="hex-code">HEX</label>
+                            <input type="text" id="hex-code" readonly>
+                            <button class="copy-btn" data-target="hex-code" title="Copy HEX">Copy</button>
+                        </div>
+                         <!-- HSLA Output -->
+                         <div class="code-output-group">
+                            <label for="hsla-code">HSLA</label>
+                            <input type="text" id="hsla-code" readonly>
+                            <button class="copy-btn" data-target="hsla-code" title="Copy HSLA">Copy</button>
+                        </div>
+                    </div>
+                </div> <!-- End of preview-output -->
+
+            </div> <!-- End of controls-preview-wrapper -->
+
+        </div> <!-- End of main-content -->
+
+    </div> <!-- End of universal-picker-container -->
+
+    <!-- Link the JavaScript file -->
+    <script src="script.js"></script>
+</body>
+</html>

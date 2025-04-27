@@ -1,0 +1,497 @@
+/* Basic Reset & Body */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    background-color: #f0f4f8;
+    display: flex; /* Use flexbox to center the container easily */
+    justify-content: center; /* Center horizontally */
+    align-items: flex-start; /* Align container to the top */
+    min-height: 100vh;
+    padding: 30px 15px; /* Add padding around the container */
+    color: #333;
+}
+
+/* Main Container - Increased Width & Centered */
+.universal-picker-container {
+    background-color: #fff;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 850px; /* Wider layout */
+    /* margin: 0 auto; Optional: Already centered by body flex, but good practice */
+}
+
+/* Header Controls */
+.header-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+h1 {
+    margin-bottom: 0;
+    font-size: 1.5rem;
+    color: #2c3e50;
+    font-weight: 600;
+}
+
+#refresh-btn {
+    background: none;
+    border: 1px solid #ccc;
+    color: #555;
+    padding: 8px 10px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1rem;
+    line-height: 1;
+    transition: all 0.2s ease;
+}
+
+#refresh-btn:hover {
+    background-color: #eee;
+    color: #2c3e50;
+    transform: rotate(90deg);
+}
+
+/* Main Content Layout */
+.main-content {
+    display: flex;
+    gap: 35px; /* Increased gap slightly for wider layout */
+    flex-wrap: wrap;
+}
+
+/* --- Left Column: Picker/Canvas + Image Controls --- */
+.picker-area-wrapper {
+    flex: 1 1 400px; /* Adjusted flex-basis slightly */
+    display: flex;
+    flex-direction: column;
+}
+
+.image-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+#image-upload {
+    display: none;
+}
+
+.upload-btn, .clear-btn {
+    display: inline-block;
+    background-color: #5dade2;
+    color: white;
+    padding: 8px 14px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: background-color 0.3s ease;
+    flex-shrink: 0;
+    text-align: center;
+}
+
+.upload-btn:hover, .clear-btn:hover {
+    background-color: #3498db;
+}
+
+.clear-btn {
+    background-color: #e74c3c;
+}
+
+.clear-btn:hover {
+    background-color: #c0392b;
+}
+
+/* Paste/Drop Zone */
+.paste-drop-zone {
+    flex-grow: 1;
+    padding: 10px;
+    border: 2px dashed #ccc;
+    border-radius: 5px;
+    text-align: center;
+    color: #888;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 50px;
+    position: relative;
+}
+
+.paste-drop-zone.drag-over {
+    border-color: #3498db;
+    background-color: #eaf5ff;
+    color: #3498db;
+}
+
+.paste-drop-zone .paste-icon {
+    font-size: 1.2rem;
+    margin-top: 5px;
+    opacity: 0.6;
+}
+
+.paste-drop-zone:hover {
+    border-color: #aaa;
+    color: #666;
+}
+
+/* Picker/Canvas Area container */
+.picker-canvas-area {
+    position: relative;
+    width: 100%;
+    min-height: 350px; /* Slightly taller maybe */
+    max-height: 500px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    overflow: hidden;
+    background-color: #f8f8f8;
+}
+
+/* Saturation/Value Box (Direct Picker) */
+.saturation-value-box {
+    width: 100%;
+    height: 100%;
+    min-height: 350px; /* Match container */
+    position: absolute;
+    top: 0;
+    left: 0;
+    cursor: crosshair;
+}
+
+.saturation-overlay,
+.value-overlay,
+.picker-handle {
+    position: absolute;
+    pointer-events: none;
+}
+
+.saturation-overlay {
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(to right, white, transparent);
+}
+
+.value-overlay {
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(to top, black, transparent);
+}
+
+.picker-handle {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid white;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(0,0,0,0.3);
+    transform: translate(-50%, -50%);
+}
+
+/* Image Canvas */
+#image-canvas {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    vertical-align: middle;
+    border-radius: 4px;
+
+    &.image-mode-active {
+        cursor: none; /* Hide default cursor when pixel preview is active */
+    }
+}
+
+/* Placeholder Text */
+.placeholder {
+    padding: 20px;
+    color: #888;
+    font-style: italic;
+    font-size: 0.95rem;
+    text-align: center;
+}
+
+/* --- Pixel Preview Cursor Styles (Grid Version) --- */
+#pixel-preview-cursor {
+    position: fixed; /* Position relative to viewport */
+    width: 110px; /* Size of the circular preview */
+    height: 110px;
+    border: 2px solid rgba(255, 255, 255, 0.8); /* White border */
+    border-radius: 50%; /* Circular */
+    box-shadow: 0 3px 10px rgba(0,0,0,0.3); /* Drop shadow */
+    pointer-events: none; /* Allows clicks through */
+    z-index: 1000; /* On top */
+    display: none; /* Hidden initially */
+    overflow: hidden; /* Clip the grid inside */
+    transform: translate(-50%, -50%); /* Center on mouse */
+    /* No background color needed here, will show image underneath */
+}
+
+.pixel-grid {
+    width: 100%;
+    height: 100%;
+    background-color: transparent; /* Make grid area transparent */
+
+    /* --- CSS Grid Lines --- */
+    /* Define grid size (adjust as needed) */
+    --grid-size: 10px; /* Size of each grid square */
+    --grid-color: rgba(128, 128, 128, 0.5); /* Color of grid lines */
+
+    /* Create repeating grid lines */
+    background-image:
+        linear-gradient(to right, var(--grid-color) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--grid-color) 1px, transparent 1px);
+    background-size: var(--grid-size) var(--grid-size);
+    /* Center the grid pattern (optional, often looks better) */
+    background-position: center center;
+}
+
+.center-marker {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    /* Size should roughly match one grid cell */
+    width: var(--grid-size, 10px);
+    height: var(--grid-size, 10px);
+    /* Style the marker */
+    border: 1px solid rgba(0, 0, 0, 0.9); /* Darker outline for center */
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.9); /* Inner white outline for contrast */
+    z-index: 1001; /* Above grid lines */
+    background-color: transparent; /* Ensure marker itself is transparent */
+}
+
+
+/* Status Message */
+.status {
+    margin-top: 10px;
+    font-size: 0.85rem;
+    color: #e74c3c;
+    min-height: 1.2em;
+    text-align: left;
+}
+
+.status.success {
+    color: #27ae60;
+}
+
+/* --- Right Column: Sliders + Preview + Output --- */
+.controls-preview-wrapper {
+    flex: 0 0 300px; /* Adjusted fixed width for wider layout */
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+/* Sliders Container */
+.sliders-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.slider-wrapper {
+    position: relative;
+    height: 15px;
+}
+
+.slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    cursor: pointer;
+    position: relative;
+    z-index: 2;
+    margin: 0;
+}
+
+/* Hue Slider Track */
+.hue-slider {
+    background: linear-gradient(to right, red 0%, yellow 17%, lime 33%, cyan 50%, blue 67%, magenta 83%, red 100%);
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+/* Opacity Slider Wrapper */
+.opacity-wrapper {}
+
+/* Opacity Slider Track (Visual Background) */
+.opacity-slider-bg {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    border-radius: 5px;
+    pointer-events: none;
+    z-index: 1;
+    border: 1px solid #ccc;
+    background-image: linear-gradient(45deg, #ccc 25%, transparent 25%),
+                      linear-gradient(-45deg, #ccc 25%, transparent 25%),
+                      linear-gradient(45deg, transparent 75%, #ccc 75%),
+                      linear-gradient(-45deg, transparent 75%, #ccc 75%);
+    background-size: 10px 10px;
+    background-position: 0 0, 0 5px, 5px -5px, -5px 0px;
+    /* JS sets color overlay gradient */
+}
+
+/* Slider Thumb Styles */
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none;
+    width: 18px; height: 18px; background: #fff; border-radius: 50%;
+    border: 1px solid #888; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    margin-top: -2px;
+}
+.slider::-moz-range-thumb {
+    width: 16px; height: 16px; background: #fff; border-radius: 50%;
+    border: 1px solid #888; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    border: none;
+}
+
+/* Preview & Output Section */
+.preview-output {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+/* Color Preview Box */
+.color-preview {
+    width: 80px;
+    height: 80px;
+    border-radius: 8px;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid #ccc;
+    flex-shrink: 0;
+}
+
+.checkerboard-bg {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background-image: linear-gradient(45deg, #ccc 25%, transparent 25%), linear-gradient(-45deg, #ccc 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #ccc 75%), linear-gradient(-45deg, transparent 75%, #ccc 75%);
+    background-size: 10px 10px; background-position: 0 0, 0 5px, 5px -5px, -5px 0px;
+    z-index: 1;
+}
+
+.preview-color-layer {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    z-index: 2;
+    /* JS sets background-color */
+}
+
+/* Color Codes Container */
+.color-codes-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+}
+
+.code-output-group {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.code-output-group label {
+    font-size: 0.8rem; color: #555; flex: 0 0 35px;
+    text-align: right; font-weight: 500;
+}
+
+.code-output-group input {
+    flex-grow: 1; padding: 6px 8px; border: 1px solid #ccc; border-radius: 4px;
+    font-size: 0.85rem; font-family: monospace; background-color: #f8f8f8;
+    min-width: 100px;
+}
+
+.code-output-group .copy-btn {
+    padding: 6px 10px; font-size: 0.75rem; border: 1px solid #ccc; background-color: #eee;
+    border-radius: 4px; cursor: pointer; transition: background-color 0.2s;
+    flex-shrink: 0; line-height: 1;
+}
+.code-output-group .copy-btn:hover { background-color: #ddd; }
+.code-output-group .copy-btn:active { background-color: #ccc; }
+
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 850px) { /* Adjusted main container breakpoint */
+    .main-content {
+        flex-direction: column;
+        gap: 30px;
+    }
+    .picker-area-wrapper {
+        flex-basis: auto;
+        order: 1;
+    }
+    .controls-preview-wrapper {
+        flex-basis: auto; flex: 0 0 auto; width: 100%;
+        /* Keep row layout longer */
+        flex-direction: row; align-items: flex-start; gap: 20px;
+    }
+    .sliders-container {
+        flex: 1; gap: 25px;
+    }
+    .preview-output {
+        flex: 0 0 200px; /* Allow slightly more space */
+         gap: 15px; align-items: center;
+    }
+    .color-preview {
+        width: 70px; height: 70px; margin-bottom: 10px;
+    }
+    .color-codes-container {
+        align-items: stretch; gap: 8px;
+    }
+}
+
+@media (max-width: 540px) { /* Secondary breakpoint for smaller screens */
+    .controls-preview-wrapper {
+        flex-direction: column; align-items: center; /* Stack controls again */
+     }
+     .sliders-container {
+         width: 100%; max-width: 300px;
+     }
+     .preview-output {
+         width: 100%; max-width: 300px;
+     }
+     .image-controls .paste-drop-zone {
+         font-size: 0.8rem;
+     }
+     .image-controls .paste-drop-zone .paste-instruction {
+         display: block; margin-bottom: 3px;
+     }
+     .code-output-group label {
+         flex-basis: 30px; font-size: 0.75rem;
+     }
+     .code-output-group input {
+         font-size: 0.8rem;
+     }
+     .code-output-group .copy-btn {
+         padding: 5px 8px; font-size: 0.7rem;
+     }
+     /* Make pixel preview cursor smaller on mobile */
+    #pixel-preview-cursor {
+        width: 80px;
+        height: 80px;
+    }
+    /* Adjust grid size variable for smaller screens if needed */
+    .pixel-grid {
+        --grid-size: 8px;
+    }
+    .center-marker {
+        width: 8px; /* Adjust marker size if needed */
+        height: 8px;
+    }
+}
